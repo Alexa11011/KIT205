@@ -18,6 +18,9 @@ List new_list();
 // Function to print the contents of a list.
 void print_list(List* self);
 
+//my func
+void list_test();
+
 // Function to insert a new node with given data at the front of the list.
 void insert_at_front(List* self, int data);
 
