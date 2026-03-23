@@ -23,25 +23,6 @@ void print_list(List* self) {
 	printf("\n");
 }
 
-//my func
-void list_test(){
-    List myList = new_list();
-
-    printf("testing insert at front");
-    
-    insert_at_front(&myList, 5);
-    insert_at_front(&myList, 3);
-    insert_at_front(&myList, 7);
-    insert_at_front(&myList, 2);
-    insert_at_front(&myList, 0);
-
-    printf("Expected: 0, 2, 7, 3, 5 \n");
-    printf("result");
-
-    print_list(&myList);
-
-
-}
 
 // Function to insert a new node with given data at the front of the list.
 void insert_at_front(List* self, int data) {
