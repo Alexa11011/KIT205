@@ -10,6 +10,117 @@ List new_list() {
 	return temp;
 }
 
+void option_insert(List* myList){
+    int x;
+
+    printf("Current list: ");
+    print_list(myList);
+
+    printf("int to insert: ");
+    scanf("%d", &x);
+
+    insert_at_front(myList, x);
+
+    printf("list after insertion: ");
+    print_list(myList);
+}
+
+void option_delete(List* myList){
+    int x;
+    printf("Current list: ");
+    print_list(myList);
+
+    printf("int to delete: ");
+    scanf("%d", &x);
+
+    delete_list(myList, x);
+
+    printf("list after deletion: ");
+    print_list(myList);
+}
+
+void option_print(List* myList){
+    printf("current list: ");
+    print_list(myList);
+}
+
+void list_adhoc_test(){
+    List myList = new_list();
+    int quit = 0;
+
+    while (!quit)
+    {
+        int option;
+        printf("Select an option: \n 0: Quit \n 1: Insert \n 2: Delete \n 3: Print \n");
+
+        scanf("%d", &option);
+
+        if (option == 0){
+            quit = 1;
+        }
+        else if (option == 1)
+        {
+            option_insert(&myList);  // pass address
+        }
+        else if (option == 2)
+        {
+            option_delete(&myList);  // pass address
+        }
+        else if (option == 3)
+        {
+            option_print(&myList);   // pass address
+        }
+        else{
+            printf("error, invalid selection \n");
+        }
+    }
+
+    destroy_list(&myList);
+}
+
+void reverse_list(List* self){
+	ListNodePtr current = self -> head;
+	ListNodePtr prev = NULL;
+	ListNodePtr next = NULL;
+
+	while (current != NULL){
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+	}
+
+	self -> head = prev; 
+}
+
+void merge_lists(List* l1, List* l2) {
+    ListNodePtr c1 = l1->head;
+    ListNodePtr c2 = l2->head;
+    ListNodePtr prev = NULL;
+
+    while (c2 != NULL) {
+        
+        if (c1 == NULL || c2->data <= c1->data) {
+            ListNodePtr next2 = c2->next;  
+    
+            c2->next = c1;
+            if (prev == NULL) {
+                l1->head = c2;  
+            } else {
+                prev->next = c2;
+            }
+
+            prev = c2;
+            c2 = next2;
+        } else {
+            prev = c1;
+            c1 = c1->next;
+        }
+    }
+}
+
+
+
 // Function to print the contents of a list.
 void print_list(List* self) {
 	ListNodePtr current = self->head;

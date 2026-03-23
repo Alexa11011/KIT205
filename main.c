@@ -85,15 +85,34 @@ void destroy_list_test(){
 
 }
 
+void reverse_list_test(){
+    List myList = new_list();
+
+    insert_at_front(&myList, 1);
+    insert_at_front(&myList, 2);
+    insert_at_front(&myList, 3);
+    insert_at_front(&myList, 4);
+    insert_at_front(&myList, 5);
+
+    print_list(&myList);
+
+    reverse_list(&myList);
+
+    print_list(&myList);
+
+}
+
 
 
 int main(){
     //insert_at_front_list_test();
     //insert_in_order_list_test();
     //delete_list_test();
-    destroy_list_test();
+    //destroy_list_test();
 
+    //list_adhoc_test();
 
+    reverse_list_test();
 
 }
 
