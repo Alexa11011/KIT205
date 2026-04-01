@@ -70,3 +70,5 @@ void print_in_order_bst(BST *self);
 void destroy_bst(BST *self);
 
 void bst_adhoc_test();
+
+int bst_height(BSTNodePtr self);

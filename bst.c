@@ -103,6 +103,42 @@ void print_in_order_bst(BST *self) {
 	print_in_order_bst_node(self->root);
 }
 
+// recursive function to print pre order
+void print_pre_order_bst_node(BSTNodePtr self){
+	if (self == NULL) {
+		printf("_");
+	} else {
+		printf("(");
+		printf(" %d ", self->data_item);
+		print_pre_order_bst_node(self->left);
+		print_pre_order_bst_node(self->right);
+		printf(")");
+	}
+}
+
+// print the tree in order
+void print_pre_order_bst(BST *self) {
+	print_pre_order_bst_node(self->root);
+}
+
+// recursive function to print in order
+void print_post_order_bst_node(BSTNodePtr self){
+	if (self == NULL) {
+		printf("_");
+	} else {
+		printf("(");
+		print_post_order_bst_node(self->right);
+		printf(" %d ", self->data_item);
+		print_post_order_bst_node(self->left);
+		printf(")");
+	}
+}
+
+// print the tree in order
+void print_post_order_bst(BST *self) {
+	print_post_order_bst_node(self->root);
+}
+
 // recursive function to detroy all node
 void destroy_bst_node(BSTNodePtr self) {
 	if (self != NULL) {
@@ -112,6 +148,18 @@ void destroy_bst_node(BSTNodePtr self) {
 		self->right = NULL;
 		free(self);
 	}
+}
+
+int bst_height(BSTNodePtr self){
+	if (self == NULL){
+		return -1;
+	}
+
+	int leftHeight = bst_height(self->left);
+	int rightHeight = bst_height(self->right);
+
+	return 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
+
 }
 
 // destroy the tree
@@ -135,5 +183,9 @@ void bst_adhoc_test() {
 		}
 	}
 	print_in_order_bst(&tree);
+	printf("\n");
+	print_post_order_bst(&tree);
+	printf("\n");
+	print_pre_order_bst(&tree);
 	printf("\n");
 }

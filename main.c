@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "list.h"
 #include "list.c"
+#include "bst.h"
+#include "bst.c"
 
 //my func
 void insert_at_front_list_test(){
@@ -102,6 +104,12 @@ void reverse_list_test(){
 
 }
 
+void tree_test(){
+    bst_adhoc_test();
+
+
+}
+
 
 
 int main(){
@@ -109,10 +117,9 @@ int main(){
     //insert_in_order_list_test();
     //delete_list_test();
     //destroy_list_test();
-
     //list_adhoc_test();
-
-    reverse_list_test();
+    //reverse_list_test();
+    tree_test();
 
 }
 
