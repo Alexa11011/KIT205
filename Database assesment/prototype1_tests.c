@@ -1,5 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "prototype1.h"
@@ -11,6 +13,39 @@ static void assert_tree_contains(AVL *tree, int value) {
 
 static void assert_tree_missing(AVL *tree, int value) {
     assert(tree == NULL || find_avl(tree, value) == NULL);
+}
+
+static char *capture_relation_output(ManyToManyRelation *relation, int id, int search_products) {
+    int saved_stdout = dup(fileno(stdout));
+    FILE *temp = tmpfile();
+
+    assert(saved_stdout != -1);
+    assert(temp != NULL);
+    assert(dup2(fileno(temp), fileno(stdout)) != -1);
+
+    if (search_products) {
+        print_products_for_customer(relation, id);
+    } else {
+        print_customers_for_product(relation, id);
+    }
+
+    fflush(stdout);
+
+    assert(dup2(saved_stdout, fileno(stdout)) != -1);
+    close(saved_stdout);
+
+    assert(fseek(temp, 0, SEEK_END) == 0);
+    long length = ftell(temp);
+    assert(length >= 0);
+    rewind(temp);
+
+    char *buffer = malloc((size_t) length + 1);
+    assert(buffer != NULL);
+    assert(fread(buffer, 1, (size_t) length, temp) == (size_t) length);
+    buffer[length] = '\0';
+
+    fclose(temp);
+    return buffer;
 }
 
 static void test_create_relation_starts_empty(void) {
@@ -116,6 +151,30 @@ static void test_load_relationships_from_missing_file_returns_error(void) {
     destroy_relation(&relation);
 }
 
+static void test_print_helpers_show_matching_ids_or_none(void) {
+    ManyToManyRelation relation = create_relation(11, 11);
+    char *products_output;
+    char *customers_output;
+    char *missing_output;
+
+    insert_relationship(&relation, 150, 156);
+    insert_relationship(&relation, 150, 200);
+    insert_relationship(&relation, 300, 156);
+
+    products_output = capture_relation_output(&relation, 150, 1);
+    customers_output = capture_relation_output(&relation, 156, 0);
+    missing_output = capture_relation_output(&relation, 999, 1);
+
+    assert(strcmp(products_output, "Products for customer 150: 156 200\n") == 0);
+    assert(strcmp(customers_output, "Customers for product 156: 150 300\n") == 0);
+    assert(strcmp(missing_output, "Products for customer 999: none\n") == 0);
+
+    free(products_output);
+    free(customers_output);
+    free(missing_output);
+    destroy_relation(&relation);
+}
+
 int main(void) {
     test_create_relation_starts_empty();
     test_insert_relationship_builds_both_directions();
@@ -123,6 +182,7 @@ int main(void) {
     test_duplicate_relationship_does_not_duplicate_avl_entry();
     test_load_relationships_from_file_builds_both_indexes();
     test_load_relationships_from_missing_file_returns_error();
+    test_print_helpers_show_matching_ids_or_none();
 
     printf("All prototype1 tests passed.\n");
     return 0;

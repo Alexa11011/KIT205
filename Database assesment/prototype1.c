@@ -81,6 +81,37 @@ static RelationEntry *get_or_create_relation_entry(RelationIndex *self, int key)
     return current;
 }
 
+static void print_sorted_values(AVLNodePtr node, int *is_first) {
+    if (node == NULL) {
+        return;
+    }
+
+    print_sorted_values(node->left, is_first);
+
+    if (!(*is_first)) {
+        printf(" ");
+    }
+
+    printf("%d", node->data_item);
+    *is_first = 0;
+
+    print_sorted_values(node->right, is_first);
+}
+
+static void print_lookup_result(const char *prefix, int key, AVL *values) {
+    int is_first = 1;
+
+    printf("%s %d: ", prefix, key);
+
+    if (values == NULL) {
+        printf("none\n");
+        return;
+    }
+
+    print_sorted_values(values->root, &is_first);
+    printf("\n");
+}
+
 ManyToManyRelation create_relation(int customer_bucket_count, int product_bucket_count) {
     ManyToManyRelation relation;
 
@@ -140,4 +171,12 @@ AVL *find_customers_for_product(ManyToManyRelation *self, int product_id) {
     }
 
     return &(entry->values);
+}
+
+void print_products_for_customer(ManyToManyRelation *self, int customer_id) {
+    print_lookup_result("Products for customer", customer_id, find_products_for_customer(self, customer_id));
+}
+
+void print_customers_for_product(ManyToManyRelation *self, int product_id) {
+    print_lookup_result("Customers for product", product_id, find_customers_for_product(self, product_id));
 }
