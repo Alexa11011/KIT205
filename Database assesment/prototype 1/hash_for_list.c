@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-#include "hashtable.h"
+#include "hash_for_list.h"
 
-HashTable create_hashtable(int n) {
+HashTable create_hash_for_list(int n) {
     HashTable new_table;
 
     new_table.size = n;
@@ -22,35 +21,29 @@ HashTable create_hashtable(int n) {
     return new_table;
 }
 
-int hash(String key, int size) {
-    unsigned long h = 0;
-    int n = (int) strlen(key);
-
-    for (int i = 0; i < n; i++) {
-        h = (h << 5) + (unsigned char) key[i];
-    }
-
-    return (int) (h % (unsigned long) size);
+int hash_list_key(int key, int size) {
+    unsigned int value = (unsigned int) key;
+    return (int) (value % (unsigned int) size);
 }
 
-void hash_insert(HashTable *self, String key) {
-    int index = hash(key, self->size);
+void hash_list_insert(HashTable *self, int key) {
+    int index = hash_list_key(key, self->size);
     insert_at_front(&(self->table[index]), key);
 }
 
-void hash_remove(HashTable *self, String key) {
-    int index = hash(key, self->size);
+void hash_list_remove(HashTable *self, int key) {
+    int index = hash_list_key(key, self->size);
     delete_from_list(&(self->table[index]), key);
 }
 
-void hash_print(HashTable *self) {
+void hash_list_print(HashTable *self) {
     for (int i = 0; i < self->size; i++) {
         printf("%d: ", i);
         print_list(&(self->table[i]));
     }
 }
 
-void hash_destroy(HashTable *self) {
+void hash_list_destroy(HashTable *self) {
     for (int i = 0; i < self->size; i++) {
         destroy_list(&(self->table[i]));
     }

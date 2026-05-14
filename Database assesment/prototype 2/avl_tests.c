@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "avl.h"
+#include "../tests.h"
 
 static void insert_values(AVL *tree, const int *values, size_t count) {
     for (size_t i = 0; i < count; i++) {
@@ -293,7 +294,7 @@ static void test_avl_height_reports_longest_path_in_edges(void) {
     destroy_avl(&shaped_tree);
 }
 
-int main(void) {
+void run_avl_tests(void) {
     test_new_avl_starts_empty();
     test_insert_performs_left_left_rotation();
     test_insert_performs_right_right_rotation();
@@ -309,7 +310,4 @@ int main(void) {
     test_print_in_order_matches_expected_format();
     test_destroy_avl_clears_root();
     test_avl_height_reports_longest_path_in_edges();
-
-    printf("All AVL tests passed.\n");
-    return 0;
 }

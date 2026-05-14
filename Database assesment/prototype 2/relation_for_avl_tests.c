@@ -4,7 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "prototype1.h"
+#include "relation_for_avl.h"
+#include "../tests.h"
 
 static void assert_tree_contains(AVL *tree, int value) {
     assert(tree != NULL);
@@ -175,7 +176,7 @@ static void test_print_helpers_show_matching_ids_or_none(void) {
     destroy_relation(&relation);
 }
 
-int main(void) {
+void run_relation_for_avl_tests(void) {
     test_create_relation_starts_empty();
     test_insert_relationship_builds_both_directions();
     test_many_to_many_relationships_are_mirrored();
@@ -183,7 +184,4 @@ int main(void) {
     test_load_relationships_from_file_builds_both_indexes();
     test_load_relationships_from_missing_file_returns_error();
     test_print_helpers_show_matching_ids_or_none();
-
-    printf("All prototype1 tests passed.\n");
-    return 0;
 }

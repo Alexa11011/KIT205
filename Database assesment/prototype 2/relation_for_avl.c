@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "prototype1.h"
+#include "relation_for_avl.h"
 
 static int hash_int_key(int key, int size) {
     unsigned int value = (unsigned int) key;
@@ -112,6 +112,29 @@ static void print_lookup_result(const char *prefix, int key, AVL *values) {
     printf("\n");
 }
 
+static long long count_avl_values(AVLNodePtr node) {
+    if (node == NULL) {
+        return 0;
+    }
+
+    return count_avl_values(node->left) + 1 + count_avl_values(node->right);
+}
+
+static long long count_relation_index_values(RelationIndex *index) {
+    long long count = 0;
+
+    for (int i = 0; i < index->size; i++) {
+        RelationEntry *current = index->buckets[i];
+
+        while (current != NULL) {
+            count += count_avl_values(current->values.root);
+            current = current->next;
+        }
+    }
+
+    return count;
+}
+
 ManyToManyRelation create_relation(int customer_bucket_count, int product_bucket_count) {
     ManyToManyRelation relation;
 
@@ -179,4 +202,9 @@ void print_products_for_customer(ManyToManyRelation *self, int customer_id) {
 
 void print_customers_for_product(ManyToManyRelation *self, int product_id) {
     print_lookup_result("Customers for product", product_id, find_customers_for_product(self, product_id));
+}
+
+long long count_relation_read_values(ManyToManyRelation *self) {
+    return count_relation_index_values(&(self->customers_to_products))
+        + count_relation_index_values(&(self->products_to_customers));
 }

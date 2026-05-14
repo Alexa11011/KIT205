@@ -1,6 +1,6 @@
 #pragma once
 
-#include "prototype 1/avl.h"
+#include "avl.h"
 
 typedef struct relationEntry {
     int key;
@@ -26,3 +26,4 @@ AVL *find_products_for_customer(ManyToManyRelation *self, int customer_id);
 AVL *find_customers_for_product(ManyToManyRelation *self, int product_id);
 void print_products_for_customer(ManyToManyRelation *self, int customer_id);
 void print_customers_for_product(ManyToManyRelation *self, int product_id);
+long long count_relation_read_values(ManyToManyRelation *self);
