@@ -149,6 +149,20 @@ static long long count_sorted_index_values(ListRelationIndex *index) {
     return count;
 }
 
+static int list_contains(List *list, int value) {
+    ListNodePtr current = list->head;
+
+    while (current != NULL) {
+        if (current->data == value) {
+            return 1;
+        }
+
+        current = current->next;
+    }
+
+    return 0;
+}
+
 static void print_sorted_list_lookup(const char *prefix, int key, List *values) {
     int count;
     int *sorted_values;
@@ -191,6 +205,10 @@ void destroy_list_relation(ListManyToManyRelation *self) {
 void insert_list_relationship(ListManyToManyRelation *self, int customer_id, int product_id) {
     ListRelationEntry *customer_entry = get_or_create_list_relation_entry(&(self->customers_to_products), customer_id);
     ListRelationEntry *product_entry = get_or_create_list_relation_entry(&(self->products_to_customers), product_id);
+
+    if (list_contains(&(customer_entry->values), product_id)) {
+        return;
+    }
 
     insert_at_front(&(customer_entry->values), product_id);
     insert_at_front(&(product_entry->values), customer_id);

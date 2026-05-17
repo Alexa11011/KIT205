@@ -1,0 +1,83 @@
+Many-to-many structure benchmark
+Data file: Database assesment/data.txt
+
+Input rows: 10000
+Prototype 1 write/load time: 0.010453 seconds
+Prototype 1 read/sort time:  0.001768 seconds
+Prototype 1 values prepared: 20000
+Prototype 2 write/load time: 0.009446 seconds
+Prototype 2 read/count time: 0.000697 seconds
+Prototype 2 values prepared: 20000
+
+Input rows: 20000
+Prototype 1 write/load time: 0.038741 seconds
+Prototype 1 read/sort time:  0.002909 seconds
+Prototype 1 values prepared: 40000
+Prototype 2 write/load time: 0.041951 seconds
+Prototype 2 read/count time: 0.003766 seconds
+Prototype 2 values prepared: 40000
+
+Input rows: 40000
+Prototype 1 write/load time: 0.206008 seconds
+Prototype 1 read/sort time:  0.010646 seconds
+Prototype 1 values prepared: 80000
+Prototype 2 write/load time: 0.172138 seconds
+Prototype 2 read/count time: 0.006969 seconds
+Prototype 2 values prepared: 80000
+
+Input rows: 80000
+Prototype 1 write/load time: 0.868889 seconds
+Prototype 1 read/sort time:  0.021159 seconds
+Prototype 1 values prepared: 160000
+Prototype 2 write/load time: 0.851946 seconds
+Prototype 2 read/count time: 0.020209 seconds
+Prototype 2 values prepared: 160000
+
+Input rows: 160000
+Prototype 1 write/load time: 3.125844 seconds
+Prototype 1 read/sort time:  0.039755 seconds
+Prototype 1 values prepared: 320000
+Prototype 2 write/load time: 3.442714 seconds
+Prototype 2 read/count time: 0.033908 seconds
+Prototype 2 values prepared: 320000
+
+Input rows: 320000
+Prototype 1 write/load time: 11.788273 seconds
+Prototype 1 read/sort time:  0.076007 seconds
+Prototype 1 values prepared: 639998
+Prototype 2 write/load time: 11.255398 seconds
+Prototype 2 read/count time: 0.054571 seconds
+Prototype 2 values prepared: 639998
+
+Input rows: 640000
+Prototype 1 write/load time: 37.983423 seconds
+Prototype 1 read/sort time:  0.166270 seconds
+Prototype 1 values prepared: 1279996
+Prototype 2 write/load time: 37.804746 seconds
+Prototype 2 read/count time: 0.110251 seconds
+Prototype 2 values prepared: 1279996
+
+Input rows: 1280000
+Prototype 1 write/load time: 105.771273 seconds
+Prototype 1 read/sort time:  0.389746 seconds
+Prototype 1 values prepared: 2559992
+Prototype 2 write/load time: 112.285570 seconds
+Prototype 2 read/count time: 0.221098 seconds
+Prototype 2 values prepared: 2559992
+
+Input rows: 2560000
+Prototype 1 write/load time: 277.824478 seconds
+Prototype 1 read/sort time:  0.780856 seconds
+Prototype 1 values prepared: 5119980
+Prototype 2 write/load time: 246.216662 seconds
+Prototype 2 read/count time: 0.376460 seconds
+Prototype 2 values prepared: 5119980
+
+Input rows: 5120000
+Prototype 1 write/load time: 626.417887 seconds
+Prototype 1 read/sort time:  1.968181 seconds
+Prototype 1 values prepared: 10239944
+Prototype 2 write/load time: 577.438515 seconds
+Prototype 2 read/count time: 0.760422 seconds
+Prototype 2 values prepared: 10239944
+

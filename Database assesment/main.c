@@ -28,6 +28,44 @@ static double seconds_between(clock_t start, clock_t end) {
     return (double) (end - start) / CLOCKS_PER_SEC;
 }
 
+static long long load_list_relation_limit(ListManyToManyRelation *relation, const char *filename, long long max_rows) {
+    FILE *file = fopen(filename, "r");
+    int customer_id;
+    int product_id;
+    long long count = 0;
+
+    if (file == NULL) {
+        return -1;
+    }
+
+    while (count < max_rows && fscanf(file, "%d %d", &customer_id, &product_id) == 2) {
+        insert_list_relationship(relation, customer_id, product_id);
+        count++;
+    }
+
+    fclose(file);
+    return count;
+}
+
+static long long load_avl_relation_limit(ManyToManyRelation *relation, const char *filename, long long max_rows) {
+    FILE *file = fopen(filename, "r");
+    int customer_id;
+    int product_id;
+    long long count = 0;
+
+    if (file == NULL) {
+        return -1;
+    }
+
+    while (count < max_rows && fscanf(file, "%d %d", &customer_id, &product_id) == 2) {
+        insert_relationship(relation, customer_id, product_id);
+        count++;
+    }
+
+    fclose(file);
+    return count;
+}
+
 static int load_default_list_relation(ListManyToManyRelation *relation) {
     int count = load_list_relationships_from_file(relation, "Database assesment/data.txt");
 
@@ -230,20 +268,124 @@ static void benchmark_avl_relation(void) {
     destroy_relation(&relation);
 }
 
+static void write_list_benchmark_row(FILE *output, const char *filename, long long rows) {
+    ListManyToManyRelation relation = create_list_relation(1009, 509);
+    clock_t start;
+    clock_t end;
+    long long loaded_rows;
+    long long read_count;
+    double write_seconds;
+    double read_seconds;
+
+    start = clock();
+    loaded_rows = load_list_relation_limit(&relation, filename, rows);
+    end = clock();
+    write_seconds = seconds_between(start, end);
+
+    if (loaded_rows < 0) {
+        fprintf(stderr, "Could not load relationship data for prototype 1.\n");
+        destroy_list_relation(&relation);
+        return;
+    }
+
+    start = clock();
+    read_count = count_list_relation_read_values(&relation);
+    end = clock();
+    read_seconds = seconds_between(start, end);
+
+    fprintf(output, "Input rows: %lld\n", loaded_rows);
+    fprintf(output, "Prototype 1 write/load time: %.6f seconds\n", write_seconds);
+    fprintf(output, "Prototype 1 read/sort time:  %.6f seconds\n", read_seconds);
+    fprintf(output, "Prototype 1 values prepared: %lld\n", read_count);
+
+    printf("  Prototype 1 at %lld rows done.\n", loaded_rows);
+    destroy_list_relation(&relation);
+}
+
+static void write_avl_benchmark_row(FILE *output, const char *filename, long long rows) {
+    ManyToManyRelation relation = create_relation(1009, 509);
+    clock_t start;
+    clock_t end;
+    long long loaded_rows;
+    long long read_count;
+    double write_seconds;
+    double read_seconds;
+
+    start = clock();
+    loaded_rows = load_avl_relation_limit(&relation, filename, rows);
+    end = clock();
+    write_seconds = seconds_between(start, end);
+
+    if (loaded_rows < 0) {
+        fprintf(stderr, "Could not load relationship data for prototype 2.\n");
+        destroy_relation(&relation);
+        return;
+    }
+
+    start = clock();
+    read_count = count_relation_read_values(&relation);
+    end = clock();
+    read_seconds = seconds_between(start, end);
+
+    fprintf(output, "Prototype 2 write/load time: %.6f seconds\n", write_seconds);
+    fprintf(output, "Prototype 2 read/count time: %.6f seconds\n", read_seconds);
+    fprintf(output, "Prototype 2 values prepared: %lld\n", read_count);
+    fprintf(output, "\n");
+
+    printf("  Prototype 2 at %lld rows done.\n", loaded_rows);
+    destroy_relation(&relation);
+}
+
 static void benchmark_prototypes(void) {
     const char *filename = find_data_filename();
+    const char *output_filename = "Database assesment/benchmark_results.txt";
+    long long row_counts[] = {
+        10000,
+        20000,
+        40000,
+        80000,
+        160000,
+        320000,
+        640000,
+        1280000,
+        2560000,
+        5120000
+    };
+    int row_count_count = (int) (sizeof row_counts / sizeof row_counts[0]);
+    FILE *output;
 
     if (filename == NULL) {
         fprintf(stderr, "Could not load relationship data from Database assesment/data.txt or data.txt\n");
         return;
     }
 
-    printf("Benchmarking with %s\n", filename);
-    printf("Console output of relationship IDs is skipped for timing.\n\n");
+    output = fopen(output_filename, "w");
 
-    benchmark_list_relation();
-    printf("\n");
-    benchmark_avl_relation();
+    if (output == NULL) {
+        output_filename = "benchmark_results.txt";
+        output = fopen(output_filename, "w");
+    }
+
+    if (output == NULL) {
+        fprintf(stderr, "Could not create benchmark_results.txt\n");
+        return;
+    }
+
+    fprintf(output, "Many-to-many structure benchmark\n");
+    fprintf(output, "Data file: %s\n\n", filename);
+
+    printf("Writing benchmark results to %s\n", output_filename);
+
+    for (int i = 0; i < row_count_count; i++) {
+        printf("\nTesting %lld rows...\n", row_counts[i]);
+        write_list_benchmark_row(output, filename, row_counts[i]);
+        fflush(output);
+        write_avl_benchmark_row(output, filename, row_counts[i]);
+        fflush(output);
+    }
+
+    fclose(output);
+    printf("\nBenchmark results complete: %s\n", output_filename);
 }
 
 int main(void) {

@@ -89,7 +89,7 @@ static void test_many_to_many_list_relationships_are_sorted_on_read(void) {
     destroy_list_relation(&relation);
 }
 
-static void test_duplicate_list_relationships_are_kept(void) {
+static void test_duplicate_list_relationships_are_ignored(void) {
     ListManyToManyRelation relation = create_list_relation(11, 11);
     char *products_output;
     char *customers_output;
@@ -100,9 +100,9 @@ static void test_duplicate_list_relationships_are_kept(void) {
     products_output = capture_list_relation_output(&relation, 150, 1);
     customers_output = capture_list_relation_output(&relation, 156, 0);
 
-    assert(strcmp(products_output, "Products for customer 150: 156 156\n") == 0);
-    assert(strcmp(customers_output, "Customers for product 156: 150 150\n") == 0);
-    assert(count_list_relation_read_values(&relation) == 4);
+    assert(strcmp(products_output, "Products for customer 150: 156\n") == 0);
+    assert(strcmp(customers_output, "Customers for product 156: 150\n") == 0);
+    assert(count_list_relation_read_values(&relation) == 2);
 
     free(products_output);
     free(customers_output);
@@ -131,8 +131,8 @@ static void test_load_list_relationships_from_file_builds_both_indexes(void) {
     customers_output = capture_list_relation_output(&relation, 156, 0);
 
     assert(count == 4);
-    assert(strcmp(products_output, "Products for customer 150: 156 156 200\n") == 0);
-    assert(strcmp(customers_output, "Customers for product 156: 150 150 300\n") == 0);
+    assert(strcmp(products_output, "Products for customer 150: 156 200\n") == 0);
+    assert(strcmp(customers_output, "Customers for product 156: 150 300\n") == 0);
 
     free(products_output);
     free(customers_output);
@@ -152,7 +152,7 @@ void run_relation_for_list_tests(void) {
     test_create_list_relation_starts_empty();
     test_insert_list_relationship_builds_both_directions();
     test_many_to_many_list_relationships_are_sorted_on_read();
-    test_duplicate_list_relationships_are_kept();
+    test_duplicate_list_relationships_are_ignored();
     test_load_list_relationships_from_file_builds_both_indexes();
     test_load_list_relationships_from_missing_file_returns_error();
 }
